@@ -6,6 +6,12 @@ import Data.Proxy (Proxy(..))
 import Data.Serialize (Serialize(..), encode, decode)
 import Data.Time.Calendar (Day(..))
 import Data.Time.Calendar.Serialize ()
+import Data.Time.Clock (UniversalTime(..), DiffTime, UTCTime(..), NominalDiffTime)
+import Data.Time.Clock (picosecondsToDiffTime)
+import Data.Time.Clock.Serialize()
+import Data.Time.Clock.TAI (AbsoluteTime)
+import Data.Time.Clock.TAI (addAbsoluteTime, taiEpoch)
+import Data.Time.Clock.TAI.Serialize ()
 import Data.Typeable (Typeable, typeRep)
 import Test.Hspec (Spec, shouldBe, describe, hspec)
 import Test.Hspec.QuickCheck (prop)
@@ -22,6 +28,10 @@ spec = do
 serializationRoundTripSpec :: Spec
 serializationRoundTripSpec = do
   propRoundTrip (Proxy :: Proxy Day)
+  propRoundTrip (Proxy :: Proxy UniversalTime)
+  propRoundTrip (Proxy :: Proxy DiffTime)
+  propRoundTrip (Proxy :: Proxy UTCTime)
+  propRoundTrip (Proxy :: Proxy AbsoluteTime)
 
 
 mkTestName
@@ -43,3 +53,18 @@ roundTrip _ = either error id . decode . encode
 
 instance Arbitrary Day where
   arbitrary = ModifiedJulianDay <$> arbitrary
+
+instance Arbitrary UniversalTime where
+  arbitrary = ModJulianDate <$> arbitrary
+
+instance Arbitrary DiffTime where
+  arbitrary = picosecondsToDiffTime <$> arbitrary
+
+instance Arbitrary UTCTime where
+  arbitrary = UTCTime <$> arbitrary <*> arbitrary
+
+instance Arbitrary NominalDiffTime where
+  arbitrary = fromRational <$> arbitrary
+
+instance Arbitrary AbsoluteTime where
+  arbitrary = (flip addAbsoluteTime taiEpoch) <$> arbitrary
