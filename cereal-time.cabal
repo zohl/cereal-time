@@ -30,7 +30,7 @@ library
     Data.Time.Clock.Serialize
     Data.Time.Clock.TAI.Serialize
     Data.Time.Format.Serialize
-    Data.Time.LocaTime.Serialize
+    Data.Time.LocalTime.Serialize
 
   if flag(dev)
     ghc-options:      -Wall -Werror
