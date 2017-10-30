@@ -14,6 +14,8 @@ import Data.Time.Clock.Serialize()
 import Data.Time.Clock.TAI (AbsoluteTime)
 import Data.Time.Clock.TAI (addAbsoluteTime, taiEpoch)
 import Data.Time.Clock.TAI.Serialize ()
+import Data.Time.Format (TimeLocale(..))
+import Data.Time.Format.Serialize ()
 import Data.Time.LocalTime (TimeZone(..), TimeOfDay(..), LocalTime(..), ZonedTime(..))
 import Data.Time.LocalTime.Serialize ()
 import Data.Typeable (Typeable, typeRep)
@@ -40,6 +42,7 @@ serializationRoundTripSpec = do
   propRoundTrip (Proxy :: Proxy TimeOfDay)
   propRoundTrip (Proxy :: Proxy LocalTime)
   propRoundTrip (Proxy :: Proxy ZonedTime)
+  propRoundTrip (Proxy :: Proxy TimeLocale)
 
 mkTestName
   :: (Serialize a, Arbitrary a, Show a, Eq a, Typeable a)
@@ -103,3 +106,7 @@ instance Eq ZonedTime where
 instance Arbitrary ZonedTime where
   arbitrary = ZonedTime <$> arbitrary <*> arbitrary
 
+instance Arbitrary TimeLocale where
+  arbitrary = TimeLocale
+    <$> arbitrary <*> arbitrary <*> arbitrary <*> arbitrary
+    <*> arbitrary <*> arbitrary <*> arbitrary <*> arbitrary
