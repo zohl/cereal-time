@@ -1,3 +1,4 @@
+{-# LANGUAGE CPP #-}
 {-# OPTIONS_GHC -fno-warn-orphans #-}
 
 module Main where
@@ -22,6 +23,10 @@ import Data.Typeable (Typeable, typeRep)
 import Test.Hspec (Spec, shouldBe, describe, hspec)
 import Test.Hspec.QuickCheck (prop)
 import Test.QuickCheck (Arbitrary(..), suchThat, resize, listOf, choose)
+
+#if !MIN_VERSION_base(4,8,0)
+import Control.Applicative ((<$>), (<*>))
+#endif
 
 
 main :: IO ()
