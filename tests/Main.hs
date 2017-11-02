@@ -1,4 +1,8 @@
-{-# LANGUAGE CPP #-}
+#if !MIN_VERSION_base(4,8,0)
+{-# LANGUAGE Rank2Types #-}
+{-# LANGUAGE DeriveDataTypeable #-}
+#endif
+
 {-# OPTIONS_GHC -fno-warn-orphans #-}
 
 module Main where
@@ -27,7 +31,6 @@ import Test.QuickCheck (Arbitrary(..), suchThat, resize, listOf, choose)
 #if !MIN_VERSION_base(4,8,0)
 import Control.Applicative ((<$>), (<*>))
 #endif
-
 
 main :: IO ()
 main = hspec spec
