@@ -1,8 +1,4 @@
-#if !MIN_VERSION_base(4,8,0)
-{-# LANGUAGE Rank2Types #-}
-{-# LANGUAGE DeriveDataTypeable #-}
-#endif
-
+{-# LANGUAGE CPP #-}
 {-# OPTIONS_GHC -fno-warn-orphans #-}
 
 module Main where
@@ -23,14 +19,18 @@ import Data.Time.Format (TimeLocale(..))
 import Data.Time.Format.Serialize ()
 import Data.Time.LocalTime (TimeZone(..), TimeOfDay(..), LocalTime(..), ZonedTime(..))
 import Data.Time.LocalTime.Serialize ()
-import Data.Typeable (Typeable, typeRep)
 import Test.Hspec (Spec, shouldBe, describe, hspec)
 import Test.Hspec.QuickCheck (prop)
 import Test.QuickCheck (Arbitrary(..), suchThat, resize, listOf, choose)
 
+#if MIN_VERSION_base(4,8,0)
+import Data.Typeable (Typeable, typeRep)
+#endif
+
 #if !MIN_VERSION_base(4,8,0)
 import Control.Applicative ((<$>), (<*>))
 #endif
+
 
 main :: IO ()
 main = hspec spec
@@ -52,6 +52,7 @@ serializationRoundTripSpec = do
   propRoundTrip (Proxy :: Proxy ZonedTime)
   propRoundTrip (Proxy :: Proxy TimeLocale)
 
+#if MIN_VERSION_base(4,8,0)
 mkTestName
   :: (Serialize a, Arbitrary a, Show a, Eq a, Typeable a)
   => Proxy a
@@ -64,6 +65,13 @@ propRoundTrip
   -> Spec
 propRoundTrip a = prop (mkTestName a) $
   \x -> x `shouldBe` (roundTrip a x)
+#else
+propRoundTrip
+  :: (Serialize a, Arbitrary a, Show a, Eq a)
+  => Proxy a
+  -> Spec
+propRoundTrip a = prop "_" $ \x -> x `shouldBe` (roundTrip a x)
+#endif
 
 roundTrip :: (Serialize a) => Proxy a -> a -> a
 roundTrip _ = either error id . decode . encode
