@@ -42,7 +42,7 @@ library
 
   build-depends: base   >= 4.7  && < 5.0
                , cereal >= 0.5  && < 0.6
-               , time   >= 1.5  && < 1.8.1
+               , time   >= 1.5  && < 1.11
 
 
 
@@ -63,5 +63,5 @@ test-suite tests
                , cereal         >= 0.5  && < 0.6
                , cereal-time
                , hspec          >= 2.0  && < 3.0
-               , time           >= 1.6  && < 1.9
+               , time           >= 1.6  && < 1.11
 
